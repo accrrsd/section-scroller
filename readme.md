@@ -73,8 +73,14 @@ Perfectly fit in any project size that uses React
   <tr>
     <td>slidesOffset</td>
     <td>number<br>number[]</td>
-    <td>A number or array of numbers specifying an offset to be applied to each slide's position.</td>
+    <td>A number or array of numbers specifying an offset to be applied to each slide"s position.</td>
     <td>0</td>
+  </tr>
+    <tr>
+    <td>slidesAlignment</td>
+    <td>"start" | "center" | "end"<br>"start" | "center" | "end"[]</td>
+    <td>Determines how the slides are aligned within the wrapper.</td>
+    <td>"start"</td>
   </tr>
   <tr>
   <td>navigationkeys</td>

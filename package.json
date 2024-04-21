@@ -15,6 +15,10 @@
     "typescript"
   ],
   "author": "accrrsd",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/accrrsd/section-scroller"
+  },
   "license": "MIT",
   "dependencies": {
     "react": ">=16.8.0"

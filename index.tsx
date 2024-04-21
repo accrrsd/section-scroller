@@ -2,11 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import defaultStyle from './style.module.css'
 
 type TTouchStartCords = { x: number; y: number }
+type TAlignment = 'start' | 'center' | 'end'
 
 type TFullPageScrollerProps = {
   children: React.ReactElement[]
   initialSlideIndex?: number
   slidesOffset?: number | number[]
+  slidesAlignment?: TAlignment | TAlignment[]
   navigationKeys?: { increaseKeys: string | string[]; decreaseKeys: string | string[] }
   getScrollPos?: (scrollPos: number, direction: 'vertical' | 'horizontal') => void
   getActiveSlide?: (slide: HTMLDivElement, index: number) => void
@@ -42,6 +44,7 @@ const SectionScroller = ({
   children,
   initialSlideIndex = 0,
   slidesOffset = 0,
+  slidesAlignment = 'start',
   navigationKeys,
   direction = 'vertical',
   className,
@@ -64,6 +67,8 @@ const SectionScroller = ({
   // ref because update state will broke touchmove
   const touchStartCords = useRef<TTouchStartCords | null>(null)
 
+  const wrapperDirectionStyle = direction === 'vertical' ? defaultStyle.wrapperVertical : defaultStyle.wrapperHorizontal
+
   const nextActive = useCallback(() => setActive((prev: number) => (prev < slides.length - 1 ? prev + 1 : prev)), [slides, setActive])
   const prevActive = useCallback(() => setActive((prev: number) => (prev > 0 ? prev - 1 : prev)), [setActive])
   const changeActiveByDelta = useCallback((delta: number) => (delta > 0 ? nextActive() : prevActive()), [nextActive, prevActive])
@@ -75,7 +80,25 @@ const SectionScroller = ({
     return active < slidesOffset.length ? slidesOffset[active] : 0
   }, [active, slidesOffset])
 
-  const wrapperDirectionStyle = direction === 'vertical' ? defaultStyle.wrapperVertical : defaultStyle.wrapperHorizontal
+  const getOffsetBySlidesAlignment = useCallback(() => {
+    if (!slidesAlignment || !wrapperRef.current) return 0
+    const currentAlignment =
+      typeof slidesAlignment === 'string' ? slidesAlignment : active < slidesAlignment.length ? slidesAlignment[active] : 'start'
+    const elem = slides[active].children[0]
+    const wrapper = wrapperRef.current
+    const elemSize = direction === 'vertical' ? elem.clientHeight : elem.clientWidth
+    const wrapperSize = direction === 'vertical' ? wrapper.clientHeight : wrapper.clientWidth
+    const wrapperScrollbarSize = direction === 'vertical' ? wrapper.offsetWidth - wrapper.clientWidth : wrapper.offsetHeight - wrapper.clientHeight
+
+    switch (currentAlignment) {
+      case 'start':
+        return 0
+      case 'center':
+        return elemSize / 2
+      case 'end':
+        return elemSize - wrapperSize - wrapperScrollbarSize
+    }
+  }, [active, direction, slides, slidesAlignment])
 
   const touchStartHandler = useCallback(
     (e: TouchEvent) => {
@@ -150,9 +173,9 @@ const SectionScroller = ({
   useEffect(() => {
     if (!wrapperRef.current || !initialSlideIndex) return
     const wrapper = wrapperRef.current
-    const neededOffset = slides[initialSlideIndex].offsetTop + getCurrentSlidesOffset()
+    const neededOffset = slides[initialSlideIndex].offsetTop + getCurrentSlidesOffset() + getOffsetBySlidesAlignment()
     if (wrapper.offsetTop !== neededOffset) wrapper.scrollTo({ top: neededOffset })
-  }, [initialSlideIndex, slides, wrapperRef, getCurrentSlidesOffset])
+  }, [initialSlideIndex, slides, wrapperRef, getCurrentSlidesOffset, getOffsetBySlidesAlignment])
 
   // listeners
   useEffect(() => {
@@ -181,7 +204,7 @@ const SectionScroller = ({
     // children 0 because we cant get dom element another way
     const currentElem = slides[active].children[0] as HTMLElement
 
-    smoothScroll(wrapper, getCurrentOffset(currentElem) + getCurrentSlidesOffset())
+    smoothScroll(wrapper, getCurrentOffset(currentElem) + getCurrentSlidesOffset() + getOffsetBySlidesAlignment())
       .then(() => {
         getActiveSlide?.(slides[active], active)
         getScrollPos?.(getCurrentOffset(wrapper), direction)
@@ -192,7 +215,19 @@ const SectionScroller = ({
       .finally(() => {
         setIsChanging(false)
       })
-  }, [active, wrapperRef, slides, direction, getCurrentOffset, getCurrentSlidesOffset, getActiveSlide, getScrollPos, onScrollError, smoothScroll])
+  }, [
+    active,
+    wrapperRef,
+    slides,
+    direction,
+    getCurrentOffset,
+    getCurrentSlidesOffset,
+    getActiveSlide,
+    getScrollPos,
+    onScrollError,
+    smoothScroll,
+    getOffsetBySlidesAlignment,
+  ])
 
   const memoizedChildren = useMemo(() => {
     return children?.map((child, index) => (
