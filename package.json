@@ -1,0 +1,28 @@
+{
+  "name": "react-section-scroller",
+  "version": "1.0.0",
+  "description": "Smooth and simple scroll like slider for React",
+  "main": "index.tsx",
+  "keywords": [
+    "react",
+    "scroll",
+    "navigation",
+    "slider",
+    "smooth",
+    "section",
+    "easy",
+    "component",
+    "typescript"
+  ],
+  "author": "accrrsd",
+  "license": "MIT",
+  "dependencies": {
+    "react": ">=16.8.0",
+    "uuid": ">=8.3.2"
+  },
+  "devDependencies": {
+    "@types/react": ">=16.8.0",
+    "@types/uuid": ">=8.3.2",
+    "typescript": ">=4.1.0"
+  }
+}

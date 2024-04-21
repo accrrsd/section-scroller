@@ -1,0 +1,14 @@
+.wrapperVertical {
+  overflow-y: scroll;
+  outline: none;
+  max-height: inherit;
+  max-width: inherit;
+}
+
+.wrapperHorizontal {
+  overflow-x: scroll;
+  display: flex;
+  outline: none;
+  max-height: inherit;
+  max-width: inherit;
+}
