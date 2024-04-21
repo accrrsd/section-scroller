@@ -92,9 +92,9 @@ const SectionScroller = ({
 
     switch (currentAlignment) {
       case 'start':
-        return 0
+        return -wrapperScrollbarSize
       case 'center':
-        return elemSize / 2
+        return (elemSize - wrapperSize) / 2 - wrapperScrollbarSize
       case 'end':
         return elemSize - wrapperSize - wrapperScrollbarSize
     }
@@ -207,7 +207,7 @@ const SectionScroller = ({
     smoothScroll(wrapper, getCurrentOffset(currentElem) + getCurrentSlidesOffset() + getOffsetBySlidesAlignment())
       .then(() => {
         getActiveSlide?.(slides[active], active)
-        getScrollPos?.(getCurrentOffset(wrapper), direction)
+        getScrollPos?.(direction === 'vertical' ? wrapper.scrollTop : wrapper.scrollLeft, direction)
       })
       .catch(() => {
         onScrollError?.(wrapper)
