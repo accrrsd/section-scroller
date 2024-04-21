@@ -4,12 +4,12 @@ import defaultStyle from './style.module.css'
 type TTouchStartCords = { x: number; y: number }
 
 type TFullPageScrollerProps = {
-  children: React.ReactNode[]
+  children: React.ReactElement[]
   initialSlideIndex?: number
   slidesOffset?: number | number[]
   navigationKeys?: { increaseKeys: string | string[]; decreaseKeys: string | string[] }
-  getScrollPos?: (scrollPos: number, direction: 'vertical' | 'horizontal') => void
-  getActiveSlide?: (slide: HTMLDivElement, index: number) => void
+  getScrollPos?: (scrollPos: number, direction: 'vertical' | 'horizontal') => unknown
+  getActiveSlide?: (slide: HTMLDivElement, index: number) => unknown
   onScrollError?: (elem: HTMLDivElement) => unknown
   scrollErrorDelay?: number
   direction?: 'vertical' | 'horizontal'
@@ -178,6 +178,7 @@ const SectionScroller = ({
     const wrapper = wrapperRef.current
 
     setIsChanging(true)
+    // children 0 because we cant get dom element another way
     const currentElem = slides[active].children[0] as HTMLElement
 
     smoothScroll(wrapper, getCurrentOffset(currentElem) + getCurrentSlidesOffset())
