@@ -8,9 +8,9 @@ type TFullPageScrollerProps = {
   initialSlideIndex?: number
   slidesOffset?: number | number[]
   navigationKeys?: { increaseKeys: string | string[]; decreaseKeys: string | string[] }
-  getScrollPos?: (scrollPos: number, direction: 'vertical' | 'horizontal') => unknown
-  getActiveSlide?: (slide: HTMLDivElement, index: number) => unknown
-  onScrollError?: (elem: HTMLDivElement) => unknown
+  getScrollPos?: (scrollPos: number, direction: 'vertical' | 'horizontal') => void
+  getActiveSlide?: (slide: HTMLDivElement, index: number) => void
+  onScrollError?: (elem: HTMLDivElement) => void
   scrollErrorDelay?: number
   direction?: 'vertical' | 'horizontal'
   touchThreshold?: number
