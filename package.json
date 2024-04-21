@@ -1,6 +1,6 @@
 {
   "name": "react-section-scroller",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Smooth and simple scroll like slider for React",
   "main": "index.tsx",
   "keywords": [
