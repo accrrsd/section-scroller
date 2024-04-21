@@ -17,12 +17,10 @@
   "author": "accrrsd",
   "license": "MIT",
   "dependencies": {
-    "react": ">=16.8.0",
-    "uuid": ">=8.3.2"
+    "react": ">=16.8.0"
   },
   "devDependencies": {
     "@types/react": ">=16.8.0",
-    "@types/uuid": ">=8.3.2",
     "typescript": ">=4.1.0"
   }
 }

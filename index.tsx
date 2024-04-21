@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { v4 as uuid } from 'uuid'
 import defaultStyle from './style.module.css'
 
 type TTouchStartCords = { x: number; y: number }
@@ -7,6 +6,7 @@ type TTouchStartCords = { x: number; y: number }
 type TFullPageScrollerProps = {
   children: React.ReactNode[]
   initialSlideIndex?: number
+  slidesOffset?: number | number[]
   navigationKeys?: { increaseKeys: string | string[]; decreaseKeys: string | string[] }
   getScrollPos?: (scrollPos: number, direction: 'vertical' | 'horizontal') => void
   getActiveSlide?: (slide: HTMLDivElement, index: number) => void
@@ -32,9 +32,16 @@ function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): (..
   }
 }
 
+const generateUniqueId = () => {
+  const timestamp = Date.now().toString(36)
+  const random = Math.random().toString(36).slice(2, 5)
+  return `${timestamp}-${random}`
+}
+
 const SectionScroller = ({
   children,
   initialSlideIndex = 0,
+  slidesOffset = 0,
   navigationKeys,
   direction = 'vertical',
   className,
@@ -62,6 +69,11 @@ const SectionScroller = ({
   const changeActiveByDelta = useCallback((delta: number) => (delta > 0 ? nextActive() : prevActive()), [nextActive, prevActive])
 
   const getCurrentOffset = useCallback((elem: HTMLElement) => (direction === 'vertical' ? elem.offsetTop : elem.offsetLeft), [direction])
+  const getCurrentSlidesOffset = useCallback(() => {
+    if (!slidesOffset) return 0
+    if (typeof slidesOffset === 'number') return slidesOffset
+    return active < slidesOffset.length ? slidesOffset[active] : 0
+  }, [active, slidesOffset])
 
   const wrapperDirectionStyle = direction === 'vertical' ? defaultStyle.wrapperVertical : defaultStyle.wrapperHorizontal
 
@@ -136,13 +148,11 @@ const SectionScroller = ({
 
   // init
   useEffect(() => {
-    if (!wrapperRef.current) return
+    if (!wrapperRef.current || !initialSlideIndex) return
     const wrapper = wrapperRef.current
-
-    if (initialSlideIndex && wrapper.offsetTop !== slides[initialSlideIndex].offsetTop) {
-      wrapper.scrollTo({ top: slides[initialSlideIndex].offsetTop })
-    }
-  }, [initialSlideIndex, slides, wrapperRef])
+    const neededOffset = slides[initialSlideIndex].offsetTop + getCurrentSlidesOffset()
+    if (wrapper.offsetTop !== neededOffset) wrapper.scrollTo({ top: neededOffset })
+  }, [initialSlideIndex, slides, wrapperRef, getCurrentSlidesOffset])
 
   // listeners
   useEffect(() => {
@@ -170,7 +180,7 @@ const SectionScroller = ({
     setIsChanging(true)
     const currentElem = slides[active].children[0] as HTMLElement
 
-    smoothScroll(wrapper, getCurrentOffset(currentElem))
+    smoothScroll(wrapper, getCurrentOffset(currentElem) + getCurrentSlidesOffset())
       .then(() => {
         getActiveSlide?.(slides[active], active)
         getScrollPos?.(getCurrentOffset(wrapper), direction)
@@ -181,11 +191,11 @@ const SectionScroller = ({
       .finally(() => {
         setIsChanging(false)
       })
-  }, [active, wrapperRef, slides, direction, getCurrentOffset, getActiveSlide, getScrollPos, onScrollError, smoothScroll])
+  }, [active, wrapperRef, slides, direction, getCurrentOffset, getCurrentSlidesOffset, getActiveSlide, getScrollPos, onScrollError, smoothScroll])
 
   const memoizedChildren = useMemo(() => {
     return children?.map((child, index) => (
-      <div style={{ display: 'contents' }} key={uuid()} ref={(ref) => ref && (slides[index] = ref)}>
+      <div style={{ display: 'contents' }} key={generateUniqueId()} ref={(ref) => ref && (slides[index] = ref)}>
         {child}
       </div>
     ))
