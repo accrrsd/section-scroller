@@ -72,26 +72,26 @@ Perfectly fit in any project size that uses React
   </tr>
   <tr>
     <td>slidesOffset</td>
-    <td>number<br>number[]</td>
-    <td>A number or array of numbers specifying an offset to be applied to each slide"s position.</td>
+    <td>number<br>number[]<br>string<br>string[]<br>number|string[]</td>
+    <td> number|string or array of numbers|strings specifying an offset to be applied to each slide"s position. If number - pixel offset, if string with percentage, like 30% - offset calculates by size of slider, if string with vw|vh - it works like in css.</td>
     <td>0</td>
   </tr>
-    <tr>
-    <td>slidesAlignment</td>
-    <td>"start" | "center" | "end"<br>"start" | "center" | "end"[]</td>
-    <td>Determines how the slides are aligned within the wrapper.</td>
-    <td>"start"</td>
-  </tr>
   <tr>
-  <td>navigationkeys</td>
+  <td>navigationKeys</td>
   <td>{increaseKeys:string | string[],<br> decreaseKeys:string | string[]}</td>
   <td>The one or multiple keys that will navigate to the next/prev slide</td>
   <td>-</td>
   </tr>
   <tr>
-  <td>getScrollPos</td>
+  <td>getRealtimeScrollPos</td>
   <td>(number, direction)=>unknown</td>
-  <td>A function to be called with the currently scroll offset pos and direction</td>
+  <td>A function to be called when scroll with realtime scroll offset pos. Use it only for light weigh realtime calculation, like animation.</td>
+  <td>-</td>
+  </tr>
+  <tr>
+  <td>getPostScrollPos</td>
+  <td>(number, direction)=>unknown</td>
+  <td>A function to be called when scroll ends with the currently scroll offset pos and direction</td>
   <td>-</td>
   </tr>
 <tr>
