@@ -179,7 +179,7 @@ const SectionScroller = ({
   const realTimeScrollPosWrapper = useCallback(
     (e: Event) => {
       const target = e.currentTarget as HTMLElement
-      getRealtimeScrollPos!(direction === 'vertical' ? target.scrollTop : target.scrollLeft, direction)
+      getRealtimeScrollPos?.(direction === 'vertical' ? target.scrollTop : target.scrollLeft, direction)
     },
     [direction, getRealtimeScrollPos]
   )
@@ -200,17 +200,17 @@ const SectionScroller = ({
     wrapper.addEventListener('touchstart', touchStartHandler, { passive: false })
     wrapper.addEventListener('touchmove', touchMoveHandler, { passive: false })
     wrapper.addEventListener('wheel', wheelHandler, { passive: false })
-    if (realTimeScrollPosWrapper) wrapper.addEventListener('scroll', realTimeScrollPosWrapper)
+    if (getRealtimeScrollPos) wrapper.addEventListener('scroll', realTimeScrollPosWrapper)
     if (navigationKeys) document.addEventListener('keydown', keyHandler, { passive: false })
 
     return () => {
       wrapper.removeEventListener('touchstart', touchStartHandler)
       wrapper.removeEventListener('touchmove', touchMoveHandler)
       wrapper.removeEventListener('wheel', wheelHandler)
-      if (realTimeScrollPosWrapper) wrapper.removeEventListener('scroll', realTimeScrollPosWrapper)
+      if (getRealtimeScrollPos) wrapper.removeEventListener('scroll', realTimeScrollPosWrapper)
       if (navigationKeys) document.removeEventListener('keydown', keyHandler)
     }
-  }, [wrapperRef, navigationKeys, wheelHandler, keyHandler, touchStartHandler, touchMoveHandler, realTimeScrollPosWrapper])
+  }, [wrapperRef, navigationKeys, wheelHandler, keyHandler, touchStartHandler, touchMoveHandler, realTimeScrollPosWrapper, getRealtimeScrollPos])
 
   // on sides[active] change
   useEffect(() => {
