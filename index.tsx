@@ -3,7 +3,7 @@ import defaultStyle from './style.module.css'
 
 type TTouchStartCords = { x: number; y: number }
 
-type TFullPageScrollerProps = {
+type TSectionScroller = {
   children: React.ReactElement[]
   initialSlideIndex?: number
   slidesOffset?: number | number[] | string | string[] | (string | number)[]
@@ -14,6 +14,7 @@ type TFullPageScrollerProps = {
   onScrollError?: (elem: HTMLDivElement) => void
   scrollErrorDelay?: number
   direction?: 'vertical' | 'horizontal'
+  activeIndex?: number
   touchThreshold?: number
   className?: string
   tabIndex?: number
@@ -45,6 +46,7 @@ const generateUniqueId = () => {
  * @param slidesOffset - A number|string or array of numbers|strings specifying an offset to be applied to each slide"s position. If number - pixel offset, if string with percentage, like 30% - offset calculates by size of slider, if string with vw|vh - it works like in css.
  * @param navigationKeys - The one or multiple keys that will navigate to the next/prev slide
  * @param direction - The scrolling direction. Default - Vertical
+ * @param activeIndex - If defined, update slider active index, needed for outside setter, like buttons.
  * @param touchThreshold - The minimum touch movement distance required to trigger a slide change, on touch devices. Default - 50.
  * @param getRealtimeScrollPos - A function to be called when scroll with realtime scroll offset pos. Use it only for light weigh realtime calculation, like animation.
  * @param getPostScrollPos - A function to be called when scroll ends with the currently scroll offset pos and direction
@@ -58,6 +60,7 @@ const SectionScroller = ({
   slidesOffset = 0,
   navigationKeys,
   direction = 'vertical',
+  activeIndex,
   className,
   tabIndex = -1,
   touchThreshold = 50,
@@ -67,7 +70,7 @@ const SectionScroller = ({
   onScrollError,
   scrollErrorDelay = 1500,
   ...props
-}: TFullPageScrollerProps) => {
+}: TSectionScroller) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const slidesRef = useRef([] as HTMLDivElement[])
@@ -211,6 +214,12 @@ const SectionScroller = ({
       if (navigationKeys) document.removeEventListener('keydown', keyHandler)
     }
   }, [wrapperRef, navigationKeys, wheelHandler, keyHandler, touchStartHandler, touchMoveHandler, realTimeScrollPosWrapper, getRealtimeScrollPos])
+
+  //handle change activeIndex
+  useEffect(() => {
+    if (!activeIndex) return
+    setActive(activeIndex)
+  }, [activeIndex])
 
   // on sides[active] change
   useEffect(() => {
