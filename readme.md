@@ -49,7 +49,7 @@ Perfectly fit in any project size that uses React
   <tr>
     <td>children</td>
     <td>ReactElement[]</td>
-    <td>An array of React elements representing the slides to be scrolled.</td>
+    <td>An array with elements, element should be something that can have offset properties, if needed - you can wrap it in div before adding to scroller.</td>
     <td>-</td>
   </tr>
   <tr>
