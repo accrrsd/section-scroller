@@ -64,6 +64,12 @@ Perfectly fit in any project size that uses React
   <td>The minimum touch movement distance required to trigger a slide change on touch devices.</td>
   <td>50</td>
   </tr> 
+    <tr>
+    <td>activeIndex</td>
+    <td>number</td>
+    <td>If defined, update slider active index, needed for outside setter, like buttons</td>
+    <td>-</td>
+  </tr>
   <tr>
     <td>initialSlideIndex</td>
     <td>number</td>
