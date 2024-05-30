@@ -1,4 +1,5 @@
 <h1>React Section Scroller</h1>
+<h2>Full open source and can be changed inside projects for your needs</h2>
 <h3>A component for creating a smooth scrolling sectioned layout</h3>
 
 ### Installation
